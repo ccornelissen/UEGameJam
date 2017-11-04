@@ -35,6 +35,8 @@ protected:
 
 	AActor* FollowPoint = nullptr;
 
+	AActor* MovePoint = nullptr;
+
 	ELightBudState CurrentState = ELightBudState::LB_Dormant;
 
 public:	
@@ -44,6 +46,8 @@ public:
 	void ReturnToPlayer();
 
 	void SetFollowPoint(AActor& PointToFollow);
+
+	void SetMovePoint(AActor& PointToMove);
 
 	ELightBudState GetCurrentState();
 

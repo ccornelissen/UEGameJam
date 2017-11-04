@@ -50,9 +50,14 @@ protected:
 
 	void RecallBuds();
 
+	void RearrangeBuds();
+
 	//////Aiming Logic///////
 	UPROPERTY(EditDefaultsOnly, Category = "Aiming")
 	TSubclassOf<AGJAimActor> AimingActor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Aiming")
+	TSubclassOf<AGJAimActor> MoveToActor;
 
 	AGJAimActor* AimActor = nullptr;
 
@@ -64,7 +69,11 @@ protected:
 
 	void AimBud();
 
-	void ThrowBud();
+	void OrderBud();
+
+	void SetBudFollow(AGJLightBud& CurBud);
+
+	int32 iCurrentBud = 0;
 
 	///////Movement Functions/////////////
 	void MoveForward(float Value);

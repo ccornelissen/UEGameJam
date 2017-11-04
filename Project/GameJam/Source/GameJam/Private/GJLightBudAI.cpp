@@ -23,3 +23,11 @@ void AGJLightBudAI::SetMoveToActor(AActor * ActorToSet)
 		MyBlackBoard->SetValueAsObject(MoveToName, ActorToSet);
 	}
 }
+
+void AGJLightBudAI::ClearMoveToActor()
+{
+	if (MyBlackBoard)
+	{
+		MyBlackBoard->ClearValue(MoveToName);
+	}
+}

@@ -29,7 +29,10 @@ void AGJLightBud::Tick(float DeltaTime)
 
 void AGJLightBud::ReturnToPlayer()
 {
-
+	if (MyController)
+	{
+		MyController->ClearMoveToActor();
+	}
 }
 
 void AGJLightBud::SetFollowPoint(AActor& PointToFollow)
@@ -39,6 +42,18 @@ void AGJLightBud::SetFollowPoint(AActor& PointToFollow)
 	if (MyController)
 	{
 		MyController->SetFollowActor(FollowPoint);
+	}
+}
+
+void AGJLightBud::SetMovePoint(AActor& PointToMove)
+{
+	MovePoint = &PointToMove;
+
+	if (MyController)
+	{
+		MyController->SetMoveToActor(MovePoint);
+
+		SetCurrentState(ELightBudState::LB_Used);
 	}
 }
 

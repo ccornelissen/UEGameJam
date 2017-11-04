@@ -20,6 +20,8 @@ public:
 
 	void SetMoveToActor(AActor* ActorToSet);
 
+	void ClearMoveToActor();
+
 protected:
 
 	// Called when the game starts or when spawned

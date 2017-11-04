@@ -2,6 +2,7 @@
 
 #include "GJPlayer.h"
 #include "Camera/CameraComponent.h"
+#include "EngineUtils.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -72,7 +73,7 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGJPlayer::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGJPlayer::MoveRight);
-	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AGJPlayer::ThrowBud);
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AGJPlayer::OrderBud);
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AGJPlayer::StartAiming);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AGJPlayer::StopAiming);
 	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AGJPlayer::RecallBuds);
@@ -104,22 +105,7 @@ void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Ot
 
 			LightBud->SetCurrentState(ELightBudState::LB_Following);
 
-			if (LightBuds.Num() == 1)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Follwing Player"));
-
-				LightBud->SetFollowPoint(*this);
-			}
-			else if(LightBuds.IsValidIndex(LightBuds.Num() - 2))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Follwing Light Bud!"));
-
-				LightBud->SetFollowPoint(*LightBuds[LightBuds.Num() - 2]);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Ruh ro Invalid light bud some how. Panic. Panic now."))
-			}
+			SetBudFollow(*LightBud);
 		}
 	}
 }
@@ -159,12 +145,92 @@ void AGJPlayer::AimBud()
 	}
 }
 
-void AGJPlayer::ThrowBud()
+void AGJPlayer::OrderBud()
 {
+	FHitResult HitPos;
+
+	if (MyController)
+	{
+		if (MoveToActor && MyController->GetHitResultUnderCursor(ECC_Visibility, true, HitPos))
+		{
+			AGJAimActor* SpawnedActor  = GetWorld()->SpawnActor<AGJAimActor>(MoveToActor, HitPos.Location, GetActorRotation());
+
+			if (LightBuds.IsValidIndex(iCurrentBud))
+			{
+				LightBuds[iCurrentBud]->SetMovePoint(*SpawnedActor);
+
+				LightBuds.RemoveAt(iCurrentBud);
+
+				RearrangeBuds();
+			}
+		}
+	}
 }
 
 void AGJPlayer::RecallBuds()
 {
+	for (TActorIterator<AGJLightBud> BudItr(GetWorld()); BudItr; ++BudItr)
+	{
+		AGJLightBud* CurBud = *BudItr;
+
+		if (CurBud)
+		{
+			if (CurBud->GetCurrentState() == ELightBudState::LB_Used)
+			{
+				CurBud->ReturnToPlayer();
+
+				LightBuds.Add(CurBud);
+
+				CurBud->SetCurrentState(ELightBudState::LB_Following);
+
+				SetBudFollow(*CurBud);
+			}
+		}
+
+	}
+
+}
+
+void AGJPlayer::RearrangeBuds()
+{
+	for (int32 i = 0; i < LightBuds.Num(); i++)
+	{
+		if (LightBuds.IsValidIndex(i))
+		{
+			if (i == 0)
+			{
+				LightBuds[i]->SetFollowPoint(*this);
+			}
+			else
+			{
+				LightBuds[i]->SetFollowPoint(*LightBuds[i - 1]);
+			}
+		}
+	}
+}
+
+void AGJPlayer::SetBudFollow(AGJLightBud& CurBud)
+{
+	AGJLightBud* TempBud = &CurBud;
+	if (TempBud)
+	{
+		if (LightBuds.Num() == 1)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Follwing Player"));
+
+			TempBud->SetFollowPoint(*this);
+		}
+		else if (LightBuds.IsValidIndex(LightBuds.Num() - 2))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Follwing Light Bud!"));
+
+			TempBud->SetFollowPoint(*LightBuds[LightBuds.Num() - 2]);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Ruh ro Invalid light bud some how. Panic. Panic now."))
+		}
+	}
 }
 
 void AGJPlayer::MoveForward(float Value)
