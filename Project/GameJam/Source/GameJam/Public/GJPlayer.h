@@ -33,14 +33,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	UCameraComponent* CameraComponent = nullptr;
 
+	APlayerController* MyController = nullptr;
+
 	///////Light Bud Logic/////////////
 	TArray<AGJLightBud*> LightBuds;
 
 	UPROPERTY(EditDefaultsOnly, Category = "LightBud")
 	float fFollowAdditive = 80.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightBud")
-	USceneComponent* ThrowPoint = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightBud")
 	UBoxComponent* CollectionBox = nullptr;
 
@@ -49,6 +49,22 @@ protected:
 
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void RecallBuds();
+
+	//////Throwing Logic///////
+	UPROPERTY(EditDefaultsOnly, Category = "Throwing")
+	TSubclassOf<AActor> AimingActor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Throwing")
+	float fThrowForce = 35.0f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightBud")
+	USceneComponent* ThrowPoint = nullptr;
+
+	void AimBud();
+
+	void ThrowBud();
 
 	///////Movement Functions/////////////
 	void MoveForward(float Value);

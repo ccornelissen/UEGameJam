@@ -10,7 +10,9 @@
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "GJLightBud.h"
+#include "GJAimActor.h"
 
 // Sets default values
 AGJPlayer::AGJPlayer()
@@ -43,7 +45,7 @@ void AGJPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	APlayerController* MyController = Cast<APlayerController>(GetController());
+	MyController = Cast<APlayerController>(GetController());
 
 	if (MyController)
 	{
@@ -65,6 +67,9 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGJPlayer::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGJPlayer::MoveRight);
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AGJPlayer::ThrowBud);
+	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AGJPlayer::AimBud);
+	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AGJPlayer::RecallBuds);
 }
 
 void AGJPlayer::SetCollectionBox(UBoxComponent* BoxToSet)
@@ -111,6 +116,40 @@ void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Ot
 			}
 		}
 	}
+}
+
+void AGJPlayer::AimBud()
+{
+	if (MyController)
+	{
+		float fMouseX;
+		float fMouseY;
+
+		MyController->GetMousePosition(fMouseX, fMouseY);
+
+		if (AimingActor && ThrowPoint)
+		{
+			AGJAimActor* CurActor = GetWorld()->SpawnActor<AGJAimActor>(AimingActor, ThrowPoint->GetComponentLocation(), GetActorRotation());
+
+			if (CurActor->GetSphereComp())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Mouse X: %f, Mouse Y: %f"), fMouseX, fMouseY);
+
+				FVector ThrowVector = FVector(fMouseX, fMouseY, 0);
+
+				CurActor->GetSphereComp()->AddImpulse(ThrowVector * fThrowForce);
+			}
+		}
+
+	}
+}
+
+void AGJPlayer::ThrowBud()
+{
+}
+
+void AGJPlayer::RecallBuds()
+{
 }
 
 void AGJPlayer::MoveForward(float Value)

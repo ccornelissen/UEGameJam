@@ -12,6 +12,7 @@ enum class ELightBudState : uint8
 	LB_Dormant,
 	LB_Following,
 	LB_Aiming,
+	LB_Used,
 	Max
 };
 
