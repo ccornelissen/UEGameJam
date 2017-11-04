@@ -15,6 +15,7 @@
 *.pch
 
 # Compiled Dynamic libraries
+*.dll
 *.so
 *.dylib
 
@@ -48,6 +49,7 @@ SourceArt/**/*.png
 SourceArt/**/*.tga
 
 # Binary Files
+Binaries/*
 
 # Builds
 Build/*
