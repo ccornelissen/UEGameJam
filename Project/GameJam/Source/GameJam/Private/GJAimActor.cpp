@@ -10,7 +10,7 @@ AGJAimActor::AGJAimActor()
 	PrimaryActorTick.bCanEverTick = true;
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SetRootComponent(SphereCollider);
-	SphereCollider->SetSimulatePhysics(true);
+	SphereCollider->SetSimulatePhysics(false);
 }
 
 USphereComponent * AGJAimActor::GetSphereComp()
@@ -22,14 +22,10 @@ USphereComponent * AGJAimActor::GetSphereComp()
 void AGJAimActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	GetWorld()->GetTimerManager().SetTimer(LifeSpanTimerHandle, this, &AGJAimActor::DestroyAimActor, fLifeSpan, false);
 }
 
 void AGJAimActor::DestroyAimActor()
 {
-	GetWorld()->GetTimerManager().ClearTimer(LifeSpanTimerHandle);
-
 	Destroy();
 }
 

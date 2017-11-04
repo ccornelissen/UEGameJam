@@ -38,7 +38,7 @@ void AGJLightBud::SetFollowPoint(AActor& PointToFollow)
 
 	if (MyController)
 	{
-		MyController->SetBlackboardActor(FollowPoint);
+		MyController->SetFollowActor(FollowPoint);
 	}
 }
 

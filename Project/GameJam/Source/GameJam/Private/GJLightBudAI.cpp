@@ -8,11 +8,18 @@ void AGJLightBudAI::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AGJLightBudAI::SetBlackboardActor(AActor* ActorToSet)
+void AGJLightBudAI::SetFollowActor(AActor* ActorToSet)
 {
 	if (MyBlackBoard)
 	{
 		MyBlackBoard->SetValueAsObject(FollowKeyName, ActorToSet);
 	}
+}
 
+void AGJLightBudAI::SetMoveToActor(AActor * ActorToSet)
+{
+	if (MyBlackBoard)
+	{
+		MyBlackBoard->SetValueAsObject(MoveToName, ActorToSet);
+	}
 }

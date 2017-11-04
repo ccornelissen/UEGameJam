@@ -11,6 +11,7 @@ class UCameraComponent;
 class UPaperFlipbookComponent;
 class UPaperFlipbook;
 class AGJLightBud;
+class AGJAimActor;
 class UBoxComponent;
 
 UCLASS()
@@ -38,9 +39,6 @@ protected:
 	///////Light Bud Logic/////////////
 	TArray<AGJLightBud*> LightBuds;
 
-	UPROPERTY(EditDefaultsOnly, Category = "LightBud")
-	float fFollowAdditive = 80.0f;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightBud")
 	UBoxComponent* CollectionBox = nullptr;
 
@@ -52,15 +50,17 @@ protected:
 
 	void RecallBuds();
 
-	//////Throwing Logic///////
-	UPROPERTY(EditDefaultsOnly, Category = "Throwing")
-	TSubclassOf<AActor> AimingActor;
+	//////Aiming Logic///////
+	UPROPERTY(EditDefaultsOnly, Category = "Aiming")
+	TSubclassOf<AGJAimActor> AimingActor;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Throwing")
-	float fThrowForce = 35.0f;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightBud")
-	USceneComponent* ThrowPoint = nullptr;
+	AGJAimActor* AimActor = nullptr;
+
+	bool bAiming = false;
+
+	void StartAiming();
+
+	void StopAiming();
 
 	void AimBud();
 

@@ -58,6 +58,11 @@ void AGJPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bAiming)
+	{
+		AimBud();
+	}
+
 }
 
 // Called to bind functionality to input
@@ -68,7 +73,8 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGJPlayer::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGJPlayer::MoveRight);
 	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AGJPlayer::ThrowBud);
-	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AGJPlayer::AimBud);
+	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AGJPlayer::StartAiming);
+	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AGJPlayer::StopAiming);
 	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AGJPlayer::RecallBuds);
 }
 
@@ -118,29 +124,38 @@ void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Ot
 	}
 }
 
+void AGJPlayer::StartAiming()
+{
+	if (AimActor == nullptr)
+	{
+		AimActor = GetWorld()->SpawnActor<AGJAimActor>(AimingActor, GetActorLocation(), GetActorRotation());
+	}
+
+	bAiming = true;
+}
+
+void AGJPlayer::StopAiming()
+{
+	bAiming = false;
+
+	if (AimActor)
+	{
+		AimActor->DestroyAimActor();
+
+		AimActor = nullptr;
+	}
+}
+
 void AGJPlayer::AimBud()
 {
-	if (MyController)
+	if (MyController && bAiming && AimActor)
 	{
-		float fMouseX;
-		float fMouseY;
+		FHitResult HitPos;
 
-		MyController->GetMousePosition(fMouseX, fMouseY);
-
-		if (AimingActor && ThrowPoint)
+		if (MyController->GetHitResultUnderCursor(ECC_Visibility, true, HitPos))
 		{
-			AGJAimActor* CurActor = GetWorld()->SpawnActor<AGJAimActor>(AimingActor, ThrowPoint->GetComponentLocation(), GetActorRotation());
-
-			if (CurActor->GetSphereComp())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Mouse X: %f, Mouse Y: %f"), fMouseX, fMouseY);
-
-				FVector ThrowVector = FVector(fMouseX, fMouseY, 0);
-
-				CurActor->GetSphereComp()->AddImpulse(ThrowVector * fThrowForce);
-			}
+			AimActor->SetActorLocation(HitPos.Location);
 		}
-
 	}
 }
 

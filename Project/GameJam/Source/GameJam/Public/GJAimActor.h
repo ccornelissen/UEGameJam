@@ -19,20 +19,12 @@ public:
 
 	USphereComponent* GetSphereComp();
 
+	void DestroyAimActor();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void DestroyAimActor();
-
-	FTimerHandle LifeSpanTimerHandle;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Collision")
 	USphereComponent* SphereCollider;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Life")
-	float fLifeSpan = 0.3f;
-
-	
-	
 };

@@ -16,7 +16,9 @@ class GAMEJAM_API AGJLightBudAI : public AAIController
 	GENERATED_BODY()
 	
 public:
-	void SetBlackboardActor(AActor* ActorToSet);
+	void SetFollowActor(AActor* ActorToSet);
+
+	void SetMoveToActor(AActor* ActorToSet);
 
 protected:
 
@@ -28,4 +30,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName FollowKeyName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName MoveToName;
 };
