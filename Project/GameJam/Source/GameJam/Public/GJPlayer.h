@@ -75,6 +75,29 @@ protected:
 
 	int32 iCurrentBud = 0;
 
+	////////Kicking//////////
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kick")
+	UBoxComponent* KickBox = nullptr;
+
+	UFUNCTION(BlueprintCallable, Category = "Kick")
+	void SetKickBox(UBoxComponent* BoxToSet);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Kick")
+	float fKickTimer = 1.0f;
+
+	FTimerHandle KickHandle;
+
+	bool bCanKick = true;
+
+	bool bKicking = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Kick")
+	float fKickDistance = 50.0f;
+
+	void Kick();
+
+	void ResetKick();
+
 	///////Movement Functions/////////////
 	void MoveForward(float Value);
 	void MoveRight(float Value);

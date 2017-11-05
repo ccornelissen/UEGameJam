@@ -14,6 +14,7 @@
 #include "Components/SphereComponent.h"
 #include "GJLightBud.h"
 #include "GJAimActor.h"
+#include "GJEnemy.h"
 
 // Sets default values
 AGJPlayer::AGJPlayer()
@@ -77,6 +78,7 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AGJPlayer::StartAiming);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AGJPlayer::StopAiming);
 	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AGJPlayer::RecallBuds);
+	PlayerInputComponent->BindAction("Kick", IE_Pressed, this, &AGJPlayer::Kick);
 }
 
 void AGJPlayer::SetCollectionBox(UBoxComponent* BoxToSet)
@@ -93,20 +95,17 @@ void AGJPlayer::SetCollectionBox(UBoxComponent* BoxToSet)
 	}
 }
 
-void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void AGJPlayer::SetKickBox(UBoxComponent * BoxToSet)
 {
-	AGJLightBud* LightBud = Cast<AGJLightBud>(OtherActor);
-
-	if (LightBud)
+	if (BoxToSet)
 	{
-		if (LightBud->GetCurrentState() == ELightBudState::LB_Dormant)
-		{
-			LightBuds.Add(LightBud);
+		KickBox = BoxToSet;
+	}
 
-			LightBud->SetCurrentState(ELightBudState::LB_Following);
-
-			SetBudFollow(*LightBud);
-		}
+	if (KickBox)
+	{
+		KickBox->OnComponentBeginOverlap.AddDynamic(this, &AGJPlayer::OnOverlapBegin);
+		KickBox->bGenerateOverlapEvents = false;
 	}
 }
 
@@ -233,6 +232,41 @@ void AGJPlayer::SetBudFollow(AGJLightBud& CurBud)
 	}
 }
 
+void AGJPlayer::Kick()
+{
+	if (bCanKick)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can Kick"));
+
+		bCanKick = false;
+
+		bKicking = true;
+
+		if (CollectionBox && KickBox)
+		{
+			CollectionBox->bGenerateOverlapEvents = false;
+
+			KickBox->bGenerateOverlapEvents = true;
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(KickHandle, this, &AGJPlayer::ResetKick, fKickTimer, false);
+	}
+}
+
+void AGJPlayer::ResetKick()
+{
+	bCanKick = true;
+
+	if (CollectionBox && KickBox)
+	{
+		CollectionBox->bGenerateOverlapEvents = true;
+
+		KickBox->bGenerateOverlapEvents = false;
+	}
+
+	bKicking = false;
+}
+
 void AGJPlayer::MoveForward(float Value)
 {
 	const FVector Direction = -GetActorRightVector();
@@ -258,4 +292,30 @@ void AGJPlayer::MoveRight(float Value)
 	}
 
 	AddMovementInput(Direction, Value);
+}
+
+void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	AGJLightBud* LightBud = Cast<AGJLightBud>(OtherActor);
+
+	if (LightBud)
+	{
+		if (LightBud->GetCurrentState() == ELightBudState::LB_Dormant)
+		{
+			LightBuds.Add(LightBud);
+
+			LightBud->SetCurrentState(ELightBudState::LB_Following);
+
+			SetBudFollow(*LightBud);
+		}
+	}
+
+	AGJEnemy* Enemy = Cast<AGJEnemy>(OtherActor);
+
+	if (Enemy && bKicking)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Kicking"));
+
+		Enemy->Stun(fKickDistance);
+	}
 }
