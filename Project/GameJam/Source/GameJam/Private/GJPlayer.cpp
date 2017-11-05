@@ -149,7 +149,7 @@ void AGJPlayer::OrderBud()
 {
 	FHitResult HitPos;
 
-	if (MyController)
+	if (MyController && LightBuds.Num() > 0)
 	{
 		if (MoveToActor && MyController->GetHitResultUnderCursor(ECC_Visibility, true, HitPos))
 		{

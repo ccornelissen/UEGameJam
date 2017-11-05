@@ -29,6 +29,8 @@ void APowerPadManager::BeginPlay()
 
 void APowerPadManager::PadCheck()
 {
+	bAllPadsEnabled = true;
+
 	for (int32 i = 0; i < PowerPads.Num(); i++)
 	{
 		if (PowerPads.IsValidIndex(i))
@@ -36,10 +38,6 @@ void APowerPadManager::PadCheck()
 			if (PowerPads[i]->GetPadState() == EPadState::PS_Off)
 			{
 				bAllPadsEnabled = false;
-			}
-			else
-			{
-				bAllPadsEnabled = true;
 			}
 		}
 	}

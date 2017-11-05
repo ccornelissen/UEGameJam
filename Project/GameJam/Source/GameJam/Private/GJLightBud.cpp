@@ -36,6 +36,8 @@ void AGJLightBud::ReturnToPlayer()
 
 		ClearPads();
 	}
+
+	MovePoint->Destroy();
 }
 
 void AGJLightBud::SetFollowPoint(AActor& PointToFollow)
@@ -100,7 +102,7 @@ void AGJLightBud::SetupLightTriggers()
 
 void AGJLightBud::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && CurrentState != ELightBudState::LB_Following)
 	{
 		APowerPad* HitPad = Cast<APowerPad>(OtherActor);
 
