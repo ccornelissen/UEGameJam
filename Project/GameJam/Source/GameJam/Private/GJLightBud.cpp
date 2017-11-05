@@ -2,7 +2,8 @@
 
 #include "GJLightBud.h"
 #include "GJLightBudAI.h"
-
+#include "Components/BoxComponent.h"
+#include "PowerPad.h"
 
 // Sets default values
 AGJLightBud::AGJLightBud()
@@ -32,6 +33,8 @@ void AGJLightBud::ReturnToPlayer()
 	if (MyController)
 	{
 		MyController->ClearMoveToActor();
+
+		ClearPads();
 	}
 }
 
@@ -43,6 +46,8 @@ void AGJLightBud::SetFollowPoint(AActor& PointToFollow)
 	{
 		MyController->SetFollowActor(FollowPoint);
 	}
+
+	ClearPads();
 }
 
 void AGJLightBud::SetMovePoint(AActor& PointToMove)
@@ -55,6 +60,8 @@ void AGJLightBud::SetMovePoint(AActor& PointToMove)
 
 		SetCurrentState(ELightBudState::LB_Used);
 	}
+
+	ClearPads();
 }
 
 ELightBudState AGJLightBud::GetCurrentState()
@@ -66,5 +73,47 @@ void AGJLightBud::SetCurrentState(ELightBudState StateToSet)
 {
 	CurrentState = StateToSet;
 }
+
+void AGJLightBud::ClearPads()
+{
+	for (int32 i = 0; i < PowerPads.Num(); i++)
+	{
+		if (PowerPads.IsValidIndex(i))
+		{
+			PowerPads[i]->TurnOff();
+		}
+	}
+
+	PowerPads.Reset();
+}
+
+void AGJLightBud::SetupLightTriggers()
+{
+	for (int32 i = 0; i < LightTriggers.Num(); i++)
+	{
+		if (LightTriggers.IsValidIndex(i))
+		{
+			LightTriggers[i]->OnComponentBeginOverlap.AddDynamic(this, &AGJLightBud::OnOverlapBegin);
+		}
+	}
+}
+
+void AGJLightBud::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if (OtherActor)
+	{
+		APowerPad* HitPad = Cast<APowerPad>(OtherActor);
+
+		if (HitPad)
+		{
+			HitPad->TurnOn();
+
+			PowerPads.Add(HitPad);
+		}
+	}
+}
+
+
+
 
 

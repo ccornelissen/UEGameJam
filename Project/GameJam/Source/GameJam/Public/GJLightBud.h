@@ -17,6 +17,8 @@ enum class ELightBudState : uint8
 };
 
 class AGJLightBudAI;
+class UBoxComponent;
+class APowerPad;
 
 UCLASS()
 class GAMEJAM_API AGJLightBud : public ACharacter
@@ -39,6 +41,19 @@ protected:
 
 	ELightBudState CurrentState = ELightBudState::LB_Dormant;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightTriggers")
+	TArray<UBoxComponent*> LightTriggers;
+
+	UFUNCTION(BlueprintCallable, Category = "LightTriggers")
+	void SetupLightTriggers();
+
+	UFUNCTION()
+	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	TArray<APowerPad*> PowerPads;
+
+	void ClearPads();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -52,8 +67,5 @@ public:
 	ELightBudState GetCurrentState();
 
 	void SetCurrentState(ELightBudState StateToSet);
-
-
-	
 	
 };
