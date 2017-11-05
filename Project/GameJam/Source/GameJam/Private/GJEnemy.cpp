@@ -1,0 +1,88 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#include "GJEnemy.h"
+#include "GJEnemyAI.h"
+#include "GJLightBud.h"
+#include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
+
+// Sets default values
+AGJEnemy::AGJEnemy()
+{
+ 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Called when the game starts or when spawned
+void AGJEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	MyController = Cast<AGJEnemyAI>(GetController());
+}
+
+void AGJEnemy::SetupTriggerZone()
+{
+	if (TriggerZone)
+	{
+		TriggerZone->OnComponentBeginOverlap.AddDynamic(this, &AGJEnemy::OnOverlapBegin);
+	}
+}
+
+void AGJEnemy::Stun(float StunForce)
+{
+	CurrentState = EEnemyState::ES_Stunned;
+
+	FVector NewVector = GetActorLocation() - (GetActorForwardVector() * StunForce);
+
+	SetActorLocation(NewVector);
+
+	if (MyController)
+	{
+		MyController->ClearLightBud();
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &AGJEnemy::RangeCheck, fStunTimer, false);
+}
+
+void AGJEnemy::RangeCheck()
+{
+	if (LightBud)
+	{
+		float DistTo;
+
+		DistTo = FVector::Dist(GetActorLocation(), LightBud->GetActorLocation());
+
+		if (DistTo < fPersueDistance && MyController)
+		{
+			MyController->SetLightBud(LightBud);
+
+			CurrentState = EEnemyState::ES_Chasing;
+		}
+		else
+		{
+			LightBud = nullptr;
+
+			CurrentState = EEnemyState::ES_Dormant;
+		}
+	}
+}
+
+void AGJEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	LightBud = Cast<AGJLightBud>(OtherActor);
+
+	if (LightBud && MyController && CurrentState == EEnemyState::ES_Dormant)
+	{
+		MyController->SetLightBud(LightBud);
+
+		CurrentState = EEnemyState::ES_Chasing;
+	}
+}
+
+// Called every frame
+void AGJEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
