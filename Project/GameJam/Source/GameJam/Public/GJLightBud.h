@@ -19,6 +19,8 @@ enum class ELightBudState : uint8
 class AGJLightBudAI;
 class UBoxComponent;
 class APowerPad;
+class UPaperFlipbookComponent;
+class UPaperFlipbook;
 
 UCLASS()
 class GAMEJAM_API AGJLightBud : public ACharacter
@@ -53,6 +55,17 @@ protected:
 	TArray<APowerPad*> PowerPads;
 
 	void ClearPads();
+
+	//Animation books
+	UPROPERTY(EditDefaultsOnly, Category = "Sprite")
+	UPaperFlipbookComponent* PaperFlipbook = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* WalkLeft;
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* WalkRight;
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* Idle;
 
 public:	
 	// Called every frame

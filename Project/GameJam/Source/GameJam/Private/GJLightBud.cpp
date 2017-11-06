@@ -4,6 +4,8 @@
 #include "GJLightBudAI.h"
 #include "Components/BoxComponent.h"
 #include "PowerPad.h"
+#include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
 
 // Sets default values
 AGJLightBud::AGJLightBud()
@@ -11,6 +13,10 @@ AGJLightBud::AGJLightBud()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Create flipbook.
+	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("BudSprite"));
+	PaperFlipbook->SetupAttachment(RootComponent);
+	PaperFlipbook->bAbsoluteRotation = true;
 }
 
 // Called when the game starts or when spawned
