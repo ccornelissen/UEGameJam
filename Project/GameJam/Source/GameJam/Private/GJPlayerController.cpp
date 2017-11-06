@@ -23,3 +23,8 @@ void AGJPlayerController::BeginPlay()
 
 	bShowMouseCursor = true;
 }
+
+UGJUserWidget& AGJPlayerController::GetUserWidget()
+{
+	return *PlayerUI;
+}

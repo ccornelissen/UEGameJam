@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GJPlayer.h"
+#include "GJPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "EngineUtils.h"
 #include "Components/CapsuleComponent.h"
@@ -15,6 +16,7 @@
 #include "GJLightBud.h"
 #include "GJAimActor.h"
 #include "GJEnemy.h"
+#include "GJUserWidget.h"
 
 // Sets default values
 AGJPlayer::AGJPlayer()
@@ -42,16 +44,26 @@ AGJPlayer::AGJPlayer()
 	PaperFlipbook->SetupAttachment(RootComponent);
 }
 
+void AGJPlayer::SetTutorial(FText InText, float fTimer)
+{
+	if (MyWidget)
+	{
+		MyWidget->SetTutorialText(InText, fTimer);
+	}
+}
+
 // Called when the game starts or when spawned
 void AGJPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	MyController = Cast<APlayerController>(GetController());
+	MyController = Cast<AGJPlayerController>(GetController());
 
 	if (MyController)
 	{
 		MyController->bShowMouseCursor = true;
+
+		MyWidget = &MyController->GetUserWidget();
 	}
 }
 

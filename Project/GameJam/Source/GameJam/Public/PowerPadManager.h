@@ -7,6 +7,7 @@
 #include "PowerPadManager.generated.h"
 
 class APowerPad;
+class ALight;
 
 UCLASS()
 class GAMEJAM_API APowerPadManager : public AActor
@@ -29,5 +30,21 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pads")
 	TArray<APowerPad*> PowerPads;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Goal")
+	bool bHasDoorToOpen = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Goal")
+	AActor* DoorToMove = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Goal")
+	AActor* NewDoorLocation = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Goal")
+	bool bHasLightsToTurnOn = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Goal")
+	TArray<ALight*> LightsToTurnOn;
+
 
 };
