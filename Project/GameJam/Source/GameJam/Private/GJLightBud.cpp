@@ -99,7 +99,7 @@ void AGJLightBud::SetupLightTriggers()
 {
 	for (int32 i = 0; i < LightTriggers.Num(); i++)
 	{
-		if (LightTriggers.IsValidIndex(i))
+		if (LightTriggers.IsValidIndex(i) && LightTriggers[i])
 		{
 			LightTriggers[i]->OnComponentBeginOverlap.AddDynamic(this, &AGJLightBud::OnOverlapBegin);
 		}
