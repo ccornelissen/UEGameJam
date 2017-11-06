@@ -22,7 +22,7 @@ class GAMEJAM_API AGJPlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	// Sets default values for this character's properties//
 	AGJPlayer();
 
 	UFUNCTION(BlueprintCallable, Category = "Tutorial")

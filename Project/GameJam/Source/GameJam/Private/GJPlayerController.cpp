@@ -7,7 +7,7 @@ void AGJPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Setup player UI
+	//Setup player UI//
 	if (PlayerUIToCreate)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Creating UI"));

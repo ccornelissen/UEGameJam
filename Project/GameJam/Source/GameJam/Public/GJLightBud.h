@@ -28,7 +28,7 @@ class GAMEJAM_API AGJLightBud : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	// Sets default values for this character's properties//
 	AGJLightBud();
 
 protected:
