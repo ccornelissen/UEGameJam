@@ -8,6 +8,7 @@
 
 class APowerPad;
 class ALight;
+class UAudioComponent;
 
 UCLASS()
 class GAMEJAM_API APowerPadManager : public AActor
@@ -45,6 +46,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Goal")
 	TArray<ALight*> LightsToTurnOn;
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	UAudioComponent* MyAudioComp = nullptr;
 
 
 };

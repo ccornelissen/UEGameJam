@@ -3,6 +3,7 @@
 #include "PowerPadManager.h"
 #include "PowerPad.h"
 #include "Engine/Light.h"
+#include "Components/AudioComponent.h"
 
 
 // Sets default values
@@ -11,6 +12,8 @@ APowerPadManager::APowerPadManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	MyAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	MyAudioComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -81,6 +84,7 @@ void APowerPadManager::ActionComplete()
 		}
 	}
 
+	MyAudioComp->Play();
 }
 
 
