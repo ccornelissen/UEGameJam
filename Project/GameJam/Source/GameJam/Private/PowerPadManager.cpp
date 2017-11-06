@@ -2,6 +2,7 @@
 
 #include "PowerPadManager.h"
 #include "PowerPad.h"
+#include "Engine/Light.h"
 
 
 // Sets default values
@@ -24,6 +25,17 @@ void APowerPadManager::BeginPlay()
 			PowerPads[i]->SetManager(*this);
 		}
 			
+	}
+
+	if (bHasLightsToTurnOn)
+	{
+		for (int32 i = 0; i < LightsToTurnOn.Num(); i++)
+		{
+			if (LightsToTurnOn.IsValidIndex(i))
+			{
+				LightsToTurnOn[i]->SetEnabled(false);
+			}
+		}
 	}
 }
 
@@ -50,7 +62,25 @@ void APowerPadManager::PadCheck()
 
 void APowerPadManager::ActionComplete()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Fully Powered Up"));
+	if (bHasDoorToOpen)
+	{
+		if (DoorToMove && NewDoorLocation)
+		{
+			DoorToMove->SetActorLocation(NewDoorLocation->GetActorLocation());
+		}
+	}
+
+	if (bHasLightsToTurnOn)
+	{
+		for (int32 i = 0; i < LightsToTurnOn.Num(); i++)
+		{
+			if (LightsToTurnOn.IsValidIndex(i))
+			{
+				LightsToTurnOn[i]->SetEnabled(true);
+			}
+		}
+	}
+
 }
 
 

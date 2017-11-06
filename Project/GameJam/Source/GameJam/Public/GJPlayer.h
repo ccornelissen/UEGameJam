@@ -13,6 +13,8 @@ class UPaperFlipbook;
 class AGJLightBud;
 class AGJAimActor;
 class UBoxComponent;
+class UGJUserWidget;
+class AGJPlayerController;
 
 UCLASS()
 class GAMEJAM_API AGJPlayer : public ACharacter
@@ -22,6 +24,9 @@ class GAMEJAM_API AGJPlayer : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AGJPlayer();
+
+	UFUNCTION(BlueprintCallable, Category = "Tutorial")
+	void SetTutorial(FText InText, float fTimer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,7 +39,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	UCameraComponent* CameraComponent = nullptr;
 
-	APlayerController* MyController = nullptr;
+	AGJPlayerController* MyController = nullptr;
 
 	///////Light Bud Logic/////////////
 	TArray<AGJLightBud*> LightBuds;
@@ -112,6 +117,9 @@ protected:
 	UPaperFlipbook* WalkRight;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UPaperFlipbook* Idle;
+
+	/////UI//////
+	UGJUserWidget* MyWidget = nullptr;
 
 public:	
 	// Called every frame

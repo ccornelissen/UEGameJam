@@ -15,6 +15,9 @@ class GAMEJAM_API AGJPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	UGJUserWidget& GetUserWidget();
+
 protected:
 
 	// Called when the game starts or when spawned
