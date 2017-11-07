@@ -42,6 +42,7 @@ AGJPlayer::AGJPlayer()
 	//Create flipbook.
 	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PlayerSprite"));
 	PaperFlipbook->SetupAttachment(RootComponent);
+	PaperFlipbook->bAbsoluteRotation = true;
 }
 
 void AGJPlayer::SetTutorial(FText InText, float fTimer)
@@ -67,6 +68,11 @@ void AGJPlayer::BeginPlay()
 	}
 }
 
+void AGJPlayer::ResetAnim()
+{
+	bAnimSwitch = true;
+}
+
 // Called every frame
 void AGJPlayer::Tick(float DeltaTime)
 {
@@ -75,6 +81,19 @@ void AGJPlayer::Tick(float DeltaTime)
 	if (bAiming)
 	{
 		AimBud();
+	}
+
+	if (PaperFlipbook && bAnimSwitch == true)
+	{
+		if (GetVelocity().Size() > 0 && WalkAnim)
+		{
+			PaperFlipbook->SetFlipbook(WalkAnim);
+
+		}
+		else if (IdleAnim)
+		{
+			PaperFlipbook->SetFlipbook(IdleAnim);
+		}
 	}
 
 }
@@ -91,6 +110,17 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AGJPlayer::StopAiming);
 	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AGJPlayer::RecallBuds);
 	PlayerInputComponent->BindAction("Kick", IE_Pressed, this, &AGJPlayer::Kick);
+}
+
+void AGJPlayer::RemoveLightBud(int32 iNum)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
+
+	LightBuds.RemoveAt(iNum);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
+
+	RearrangeBuds();
 }
 
 void AGJPlayer::SetCollectionBox(UBoxComponent* BoxToSet)
@@ -174,6 +204,16 @@ void AGJPlayer::OrderBud()
 
 				RearrangeBuds();
 			}
+
+			if (PointAnim)
+			{
+				bAnimSwitch = false;
+
+				PaperFlipbook->SetFlipbook(PointAnim);
+
+				GetWorld()->GetTimerManager().SetTimer(AnimHandle, this, &AGJPlayer::ResetAnim, fAnimTimer);
+				
+			}
 		}
 	}
 }
@@ -198,6 +238,15 @@ void AGJPlayer::RecallBuds()
 			}
 		}
 
+		if (PointAnim)
+		{
+			bAnimSwitch = false;
+
+			PaperFlipbook->SetFlipbook(PointAnim);
+
+			GetWorld()->GetTimerManager().SetTimer(AnimHandle, this, &AGJPlayer::ResetAnim, fAnimTimer);
+		}
+
 	}
 
 }
@@ -211,10 +260,14 @@ void AGJPlayer::RearrangeBuds()
 			if (i == 0)
 			{
 				LightBuds[i]->SetFollowPoint(*this);
+
+				LightBuds[i]->MyNumber = i;
 			}
 			else
 			{
 				LightBuds[i]->SetFollowPoint(*LightBuds[i - 1]);
+
+				LightBuds[i]->MyNumber = i;
 			}
 		}
 	}
@@ -254,6 +307,15 @@ void AGJPlayer::Kick()
 
 		bKicking = true;
 
+		if (KickAnim)
+		{
+			bAnimSwitch = false;
+
+			PaperFlipbook->SetFlipbook(KickAnim);
+
+			GetWorld()->GetTimerManager().SetTimer(AnimHandle, this, &AGJPlayer::ResetAnim, fAnimTimer);
+		}
+
 		if (CollectionBox && KickBox)
 		{
 			CollectionBox->bGenerateOverlapEvents = false;
@@ -290,17 +352,17 @@ void AGJPlayer::MoveRight(float Value)
 {
 	const FVector Direction = GetActorForwardVector();
 
-	if (Value > 0 && WalkRight)
+	if (Value > 0)
 	{
-		PaperFlipbook->SetFlipbook(WalkRight);
+		FRotator NewRot = FRotator(0, 0, 0);
+
+		PaperFlipbook->SetRelativeRotation(NewRot);
 	}
-	else if (Value < 0 && WalkLeft)
+	else if (Value < 0)
 	{
-		PaperFlipbook->SetFlipbook(WalkLeft);
-	}
-	else if (Idle)
-	{
-		PaperFlipbook->SetFlipbook(Idle);
+		FRotator NewRot = FRotator(0, 180, 0);
+
+		PaperFlipbook->SetRelativeRotation(NewRot);
 	}
 
 	AddMovementInput(Direction, Value);
@@ -314,7 +376,11 @@ void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Ot
 	{
 		if (LightBud->GetCurrentState() == ELightBudState::LB_Dormant)
 		{
+			LightBud->Player = this;
+
 			LightBuds.Add(LightBud);
+
+			LightBud->MyNumber = LightBuds.Num() - 1;
 
 			LightBud->SetCurrentState(ELightBudState::LB_Following);
 

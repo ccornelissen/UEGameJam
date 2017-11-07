@@ -6,6 +6,7 @@
 #include "PowerPad.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
+#include "GJPlayer.h"
 
 // Sets default values//
 AGJLightBud::AGJLightBud()
@@ -32,6 +33,51 @@ void AGJLightBud::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (PaperFlipbook)
+	{
+		if (GetVelocity().Size() > 0 && WalkAnim)
+		{
+			PaperFlipbook->SetFlipbook(WalkAnim);
+
+			if (GetActorRotation().Yaw > 0)
+			{
+				FRotator NewRot = FRotator(0, 90, 0);
+
+				PaperFlipbook->SetRelativeRotation(NewRot);
+			}
+			else
+			{
+				FRotator NewRot = FRotator(0, -90, 0);
+
+				PaperFlipbook->SetRelativeRotation(NewRot);
+			}
+
+		}
+		else if (IdleAnim)
+		{
+			PaperFlipbook->SetFlipbook(IdleAnim);
+		}
+	}
+
+}
+
+void AGJLightBud::ClearFollow()
+{
+	if (MyController)
+	{
+		MyController->ClearFollowActor();
+
+		ClearPads();
+	}
+
+	CurrentState = ELightBudState::LB_Dormant;
+
+	if (Player)
+	{
+		Player->RemoveLightBud(MyNumber);
+	}
+
+	FollowPoint = nullptr;
 }
 
 void AGJLightBud::ReturnToPlayer()
@@ -43,7 +89,10 @@ void AGJLightBud::ReturnToPlayer()
 		ClearPads();
 	}
 
-	MovePoint->Destroy();
+	if (MovePoint)
+	{
+		MovePoint->Destroy();
+	}
 }
 
 void AGJLightBud::SetFollowPoint(AActor& PointToFollow)

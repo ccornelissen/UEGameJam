@@ -31,3 +31,11 @@ void AGJLightBudAI::ClearMoveToActor()
 		MyBlackBoard->ClearValue(MoveToName);
 	}
 }
+
+void AGJLightBudAI::ClearFollowActor()
+{
+	if (MyBlackBoard)
+	{
+		MyBlackBoard->ClearValue(FollowKeyName);
+	}
+}

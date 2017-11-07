@@ -112,11 +112,22 @@ protected:
 	UPaperFlipbookComponent* PaperFlipbook = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UPaperFlipbook* WalkLeft;
+	UPaperFlipbook* WalkAnim;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UPaperFlipbook* WalkRight;
+	UPaperFlipbook* PointAnim;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UPaperFlipbook* Idle;
+	UPaperFlipbook* IdleAnim;
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* KickAnim;
+
+	bool bAnimSwitch = true;
+
+	void ResetAnim();
+
+	FTimerHandle AnimHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	float fAnimTimer = 1.0f;
 
 	/////UI//////
 	UGJUserWidget* MyWidget = nullptr;
@@ -128,6 +139,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void RemoveLightBud(int32 iNum);
 	
 	
 };

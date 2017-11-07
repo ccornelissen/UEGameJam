@@ -22,6 +22,8 @@ public:
 
 	void ClearMoveToActor();
 
+	void ClearFollowActor();
+
 protected:
 
 	// Called when the game starts or when spawned

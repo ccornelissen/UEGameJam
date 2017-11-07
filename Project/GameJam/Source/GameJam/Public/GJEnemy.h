@@ -12,12 +12,16 @@ enum class EEnemyState : uint8
 	ES_Dormant,
 	ES_Chasing,
 	ES_Stunned,
+	ES_Retreating,
 	Max
 };
 
 class UBoxComponent;
 class AGJEnemyAI;
 class AGJLightBud;
+class UPaperFlipbookComponent;
+class UPaperFlipbook;
+class ALight;
 
 UCLASS()
 class GAMEJAM_API AGJEnemy : public ACharacter
@@ -61,10 +65,46 @@ protected:
 
 	void RangeCheck();
 
+	///////Attack///////
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	AActor* PortLocation = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	float fAttackRange = 10.0f;
+
+	void Attack();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	TSubclassOf<ALight> DeathLight;
+		
+	//Animation books
+	UPROPERTY(EditDefaultsOnly, Category = "Sprite")
+	UPaperFlipbookComponent* PaperFlipbook = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* WalkAnim;
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* AttackAnim;
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPaperFlipbook* IdleAnim;
+
+
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void Stun(float StunForce);
+
+	////Death/////
+	UPROPERTY(EditAnywhere, Category = "Retreat")
+	AActor* RetreatLocation = nullptr;
+
+	void Retreat();
+
+	UPROPERTY(EditAnywhere, Category = "Patrol")
+	TArray<AActor*> PatrolPoints;
 	
 };

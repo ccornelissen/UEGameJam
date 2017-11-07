@@ -21,6 +21,7 @@ class UBoxComponent;
 class APowerPad;
 class UPaperFlipbookComponent;
 class UPaperFlipbook;
+class AGJPlayer;
 
 UCLASS()
 class GAMEJAM_API AGJLightBud : public ACharacter
@@ -61,15 +62,15 @@ protected:
 	UPaperFlipbookComponent* PaperFlipbook = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UPaperFlipbook* WalkLeft;
+	UPaperFlipbook* WalkAnim;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UPaperFlipbook* WalkRight;
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UPaperFlipbook* Idle;
+	UPaperFlipbook* IdleAnim;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void ClearFollow();
 
 	void ReturnToPlayer();
 
@@ -80,5 +81,9 @@ public:
 	ELightBudState GetCurrentState();
 
 	void SetCurrentState(ELightBudState StateToSet);
+
+	AGJPlayer* Player = nullptr;
+
+	int32 MyNumber = 0;
 	
 };

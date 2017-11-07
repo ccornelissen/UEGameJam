@@ -5,12 +5,19 @@
 #include "GJLightBud.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
+#include "Engine/Light.h"
 
 // Sets default values
 AGJEnemy::AGJEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("BudSprite"));
+	PaperFlipbook->SetupAttachment(RootComponent);
+	PaperFlipbook->bAbsoluteRotation = true;
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +52,10 @@ void AGJEnemy::Stun(float StunForce)
 	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &AGJEnemy::RangeCheck, fStunTimer, false);
 }
 
+void AGJEnemy::Retreat()
+{
+}
+
 void AGJEnemy::RangeCheck()
 {
 	if (LightBud)
@@ -68,6 +79,28 @@ void AGJEnemy::RangeCheck()
 	}
 }
 
+void AGJEnemy::Attack()
+{
+	if (LightBud && PortLocation)
+	{
+		if (DeathLight)
+		{
+			GetWorld()->SpawnActor<ALight>(DeathLight, LightBud->GetActorLocation(), LightBud->GetActorRotation());
+		}
+
+		LightBud->ReturnToPlayer();
+		LightBud->ClearFollow();
+
+		LightBud->SetActorLocation(PortLocation->GetActorLocation());
+
+		LightBud = nullptr;
+
+		MyController->ClearLightBud();
+
+		CurrentState = EEnemyState::ES_Dormant;
+	}
+}
+
 void AGJEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	LightBud = Cast<AGJLightBud>(OtherActor);
@@ -84,5 +117,42 @@ void AGJEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Oth
 void AGJEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (PaperFlipbook)
+	{
+		if (GetVelocity().Size() > 0 && WalkAnim)
+		{
+			PaperFlipbook->SetFlipbook(WalkAnim);
+
+			if (GetActorRotation().Yaw > 0)
+			{
+				FRotator NewRot = FRotator(0, 90, 0);
+
+				PaperFlipbook->SetRelativeRotation(NewRot);
+			}
+			else
+			{
+				FRotator NewRot = FRotator(0, -90, 0);
+
+				PaperFlipbook->SetRelativeRotation(NewRot);
+			}
+
+		}
+		else if (IdleAnim)
+		{
+			PaperFlipbook->SetFlipbook(IdleAnim);
+		}
+
+		if (LightBud && CurrentState != EEnemyState::ES_Stunned)
+		{
+			float Dist = FVector::Dist(GetActorLocation(), LightBud->GetActorLocation());
+
+			if(Dist < fAttackRange)
+			{
+				PaperFlipbook->SetFlipbook(AttackAnim);
+				Attack();
+			}
+		}
+	}
+	
 
 }
