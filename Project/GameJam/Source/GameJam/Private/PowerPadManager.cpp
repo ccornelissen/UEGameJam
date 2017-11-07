@@ -4,6 +4,7 @@
 #include "PowerPad.h"
 #include "Engine/Light.h"
 #include "Components/AudioComponent.h"
+#include "GJEnemy.h"
 
 
 // Sets default values
@@ -83,6 +84,19 @@ void APowerPadManager::ActionComplete()
 			}
 		}
 	}
+
+	if (bHasEnemyToScare)
+	{
+		for (int32 i = 0; i < EnemiesToScare.Num(); i++)
+		{
+			if (EnemiesToScare.IsValidIndex(i))
+			{
+				EnemiesToScare[i]->Retreat();
+			}
+		}
+	}
+
+
 
 	MyAudioComp->Play();
 }

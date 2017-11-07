@@ -5,6 +5,7 @@
 #include "GJLightBud.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
 #include "Engine/Light.h"
@@ -46,6 +47,8 @@ void AGJEnemy::Stun(float StunForce)
 
 	if (MyController)
 	{
+		MyController->SetStunned(true);
+
 		MyController->ClearLightBud();
 	}
 
@@ -54,6 +57,14 @@ void AGJEnemy::Stun(float StunForce)
 
 void AGJEnemy::Retreat()
 {
+	GetCharacterMovement()->MaxWalkSpeed = 800.0f;
+
+	if (MyController && RetreatLocation)
+	{
+		MyController->SetRetreatPoint(RetreatLocation);
+	}
+
+	CurrentState = EEnemyState::ES_Retreating;
 }
 
 void AGJEnemy::RangeCheck()
@@ -76,6 +87,11 @@ void AGJEnemy::RangeCheck()
 
 			CurrentState = EEnemyState::ES_Dormant;
 		}
+	}
+
+	if (MyController)
+	{
+		MyController->SetStunned(false);
 	}
 }
 

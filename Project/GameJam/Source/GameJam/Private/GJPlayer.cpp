@@ -280,13 +280,10 @@ void AGJPlayer::SetBudFollow(AGJLightBud& CurBud)
 	{
 		if (LightBuds.Num() == 1)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Follwing Player"));
-
 			TempBud->SetFollowPoint(*this);
 		}
 		else if (LightBuds.IsValidIndex(LightBuds.Num() - 2))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Follwing Light Bud!"));
 
 			TempBud->SetFollowPoint(*LightBuds[LightBuds.Num() - 2]);
 		}
