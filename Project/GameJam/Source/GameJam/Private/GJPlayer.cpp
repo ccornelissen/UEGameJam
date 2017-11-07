@@ -112,17 +112,6 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Kick", IE_Pressed, this, &AGJPlayer::Kick);
 }
 
-void AGJPlayer::RemoveLightBud(int32 iNum)
-{
-	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
-
-	LightBuds.RemoveAt(iNum);
-
-	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
-
-	RearrangeBuds();
-}
-
 void AGJPlayer::SetCollectionBox(UBoxComponent* BoxToSet)
 {
 	if (BoxToSet)
@@ -251,6 +240,17 @@ void AGJPlayer::RecallBuds()
 
 }
 
+void AGJPlayer::RemoveLightBud(int32 iNum)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
+
+	LightBuds.RemoveAt(iNum);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
+
+	RearrangeBuds();
+}
+
 void AGJPlayer::RearrangeBuds()
 {
 	for (int32 i = 0; i < LightBuds.Num(); i++)
@@ -261,11 +261,15 @@ void AGJPlayer::RearrangeBuds()
 			{
 				LightBuds[i]->SetFollowPoint(*this);
 
+				UE_LOG(LogTemp, Warning, TEXT("Player"));
+
 				LightBuds[i]->MyNumber = i;
 			}
 			else
 			{
 				LightBuds[i]->SetFollowPoint(*LightBuds[i - 1]);
+
+				UE_LOG(LogTemp, Warning, TEXT("Light Bud"));
 
 				LightBuds[i]->MyNumber = i;
 			}

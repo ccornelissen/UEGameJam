@@ -119,8 +119,11 @@ void AGJEnemy::Attack()
 
 void AGJEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	LightBud = Cast<AGJLightBud>(OtherActor);
-
+	if (LightBud == nullptr)
+	{
+		LightBud = Cast<AGJLightBud>(OtherActor);
+	}
+	
 	if (LightBud && MyController && CurrentState == EEnemyState::ES_Dormant)
 	{
 		MyController->SetLightBud(LightBud);
