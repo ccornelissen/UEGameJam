@@ -77,6 +77,8 @@ protected:
 
 	void RearrangeBuds();
 
+	void SwitchBudForward();
+
 	//////Aiming Logic///////
 	UPROPERTY(EditDefaultsOnly, Category = "Aiming")
 	TSubclassOf<AGJAimActor> AimingActor;

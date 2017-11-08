@@ -198,6 +198,11 @@ void AGJEnemy::Tick(float DeltaTime)
 			}
 		}
 	}
+
+	if (CurrentState == EEnemyState::ES_Chasing)
+	{
+		RangeCheck();
+	}
 	
 
 }

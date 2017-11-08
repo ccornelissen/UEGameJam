@@ -115,6 +115,7 @@ void AGJPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AGJPlayer::StopAiming);
 	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &AGJPlayer::RecallBuds);
 	PlayerInputComponent->BindAction("Kick", IE_Pressed, this, &AGJPlayer::Kick);
+	PlayerInputComponent->BindAction("SwitchForward", IE_Pressed, this, &AGJPlayer::SwitchBudForward);
 }
 
 void AGJPlayer::SetCollectionBox(UBoxComponent* BoxToSet)
@@ -293,6 +294,47 @@ void AGJPlayer::RearrangeBuds()
 				LightBuds[i]->MyNumber = i;
 			}
 		}
+	}
+}
+
+void AGJPlayer::SwitchBudForward()
+{
+	TArray<AGJLightBud*> TempArray = LightBuds;
+
+	if (TempArray.Num() > 1)
+	{
+		LightBuds.Reset();
+
+		for (int32 i = 0; i < TempArray.Num(); i++)
+		{
+			if (TempArray.IsValidIndex(i))
+			{
+				if (i == 0)
+				{
+					TempArray[i]->SetFollowPoint(*LightBuds[LightBuds.Num()- 1]);
+
+					TempArray[i]->MyNumber = LightBuds.Num() - 1;
+				}
+				else if (i == 1)
+				{
+					TempArray[i]->SetFollowPoint(*this);
+
+					TempArray[i]->MyNumber = 0;
+
+					LightBuds.Add(TempArray[i]);
+				}
+				else
+				{
+					TempArray[i]->SetFollowPoint(*LightBuds[i - 1]);
+
+					TempArray[i]->MyNumber = i;
+
+					LightBuds.Add(TempArray[i]);
+				}
+			}
+		}
+
+		LightBuds.Add(TempArray[0]);
 	}
 }
 
