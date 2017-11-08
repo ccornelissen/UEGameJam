@@ -269,8 +269,11 @@ void AGJPlayer::RemoveLightBud(int32 iNum)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
 
-	LightBuds.RemoveAt(iNum);
-
+	if (LightBuds.IsValidIndex(iNum))
+	{
+		LightBuds.RemoveAt(iNum);
+	}
+		
 	UE_LOG(LogTemp, Warning, TEXT("%d"), LightBuds.Num());
 
 	RearrangeBuds();

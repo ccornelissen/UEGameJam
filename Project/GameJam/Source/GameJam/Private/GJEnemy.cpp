@@ -77,6 +77,11 @@ void AGJEnemy::Retreat()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 800.0f;
 
+	if (LightBud)
+	{
+		MyController->ClearLightBud();
+	}
+
 	if (MyController && RetreatLocation)
 	{
 		MyController->SetRetreatPoint(RetreatLocation);
@@ -211,7 +216,7 @@ void AGJEnemy::Tick(float DeltaTime)
 		{
 			float Dist = FVector::Dist(GetActorLocation(), LightBud->GetActorLocation());
 
-			if(Dist < fAttackRange)
+			if(Dist < fAttackRange && AttackAnim)
 			{
 				PaperFlipbook->SetFlipbook(AttackAnim);
 				Attack();

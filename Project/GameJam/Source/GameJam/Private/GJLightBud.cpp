@@ -77,12 +77,12 @@ void AGJLightBud::ClearFollow()
 		ClearPads();
 	}
 
-	CurrentState = ELightBudState::LB_Dormant;
-
-	if (Player)
+	if (Player && CurrentState == ELightBudState::LB_Following)
 	{
 		Player->RemoveLightBud(MyNumber);
 	}
+
+	CurrentState = ELightBudState::LB_Dormant;
 
 	FollowPoint = nullptr;
 }
@@ -166,6 +166,8 @@ void AGJLightBud::SetupLightTriggers()
 		if (LightTriggers.IsValidIndex(i) && LightTriggers[i])
 		{
 			LightTriggers[i]->OnComponentBeginOverlap.AddDynamic(this, &AGJLightBud::OnOverlapBegin);
+			LightTriggers[i]->OnComponentEndOverlap.AddDynamic(this, &AGJLightBud::OnOverlapEnd);
+
 		}
 	}
 }
@@ -181,6 +183,20 @@ void AGJLightBud::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * 
 			HitPad->TurnOn();
 
 			PowerPads.Add(HitPad);
+		}
+	}
+}
+
+void AGJLightBud::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	//TO DO FIX THIS
+	if (OtherActor && CurrentState != ELightBudState::LB_Following)
+	{
+		APowerPad* HitPad = Cast<APowerPad>(OtherActor);
+
+		if (HitPad)
+		{
+			HitPad->TurnOff();
 		}
 	}
 }
