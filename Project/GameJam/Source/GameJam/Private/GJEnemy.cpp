@@ -23,6 +23,11 @@ AGJEnemy::AGJEnemy()
 	PaperFlipbook->SetupAttachment(RootComponent);
 	PaperFlipbook->bAbsoluteRotation = true;
 
+	DizzyFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Dizzy"));
+	DizzyFlipbook->SetupAttachment(RootComponent);
+	DizzyFlipbook->bAbsoluteRotation = true;
+	DizzyFlipbook->SetVisibility(false);
+
 	MyAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	MyAudioComp->SetupAttachment(RootComponent);
 
@@ -58,6 +63,12 @@ void AGJEnemy::Stun(float StunForce)
 
 		MyController->ClearLightBud();
 	}
+
+	if (DizzyFlipbook)
+	{
+		DizzyFlipbook->SetVisibility(true);
+	}
+	
 
 	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &AGJEnemy::RangeCheck, fStunTimer, false);
 }
@@ -106,6 +117,11 @@ void AGJEnemy::RangeCheck()
 	if (MyController)
 	{
 		MyController->SetStunned(false);
+	}
+
+	if (DizzyFlipbook)
+	{
+		DizzyFlipbook->SetVisibility(false);
 	}
 }
 

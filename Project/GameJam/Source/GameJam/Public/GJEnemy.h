@@ -85,6 +85,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Sprite")
 	UPaperFlipbookComponent* PaperFlipbook = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sprite")
+	UPaperFlipbookComponent* DizzyFlipbook = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UPaperFlipbook* WalkAnim;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
