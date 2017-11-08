@@ -7,8 +7,6 @@
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
 #include "GJPlayer.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundBase.h"
 
 // Sets default values//
 AGJLightBud::AGJLightBud()
@@ -20,9 +18,6 @@ AGJLightBud::AGJLightBud()
 	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("BudSprite"));
 	PaperFlipbook->SetupAttachment(RootComponent);
 	PaperFlipbook->bAbsoluteRotation = true;
-
-	MyAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
-	MyAudioComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -97,13 +92,6 @@ void AGJLightBud::ReturnToPlayer()
 	if (MovePoint)
 	{
 		MovePoint->Destroy();
-	}
-
-	if (MyAudioComp && ReturnSound)
-	{
-		MyAudioComp->SetSound(ReturnSound);
-
-		MyAudioComp->Play();
 	}
 }
 
