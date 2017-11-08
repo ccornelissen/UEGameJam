@@ -22,8 +22,6 @@ class APowerPad;
 class UPaperFlipbookComponent;
 class UPaperFlipbook;
 class AGJPlayer;
-class UAudioComponent;
-class USoundBase;
 
 UCLASS()
 class GAMEJAM_API AGJLightBud : public ACharacter
@@ -67,13 +65,6 @@ protected:
 	UPaperFlipbook* WalkAnim;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UPaperFlipbook* IdleAnim;
-
-	//Audio
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	UAudioComponent* MyAudioComp = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	USoundBase* ReturnSound;
 
 public:	
 	// Called every frame
