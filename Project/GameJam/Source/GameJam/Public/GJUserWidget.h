@@ -12,6 +12,7 @@
 
 class UTextBlock;
 class UEditableTextBox;
+class UImage;
 
 UCLASS()
 class GAMEJAM_API UGJUserWidget : public UUserWidget
@@ -29,9 +30,11 @@ protected:
 	UTextBlock* InteractionText = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Player UI")
 	UTextBlock* TutorialText = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Player UI")
+	UImage* TutTextBG = nullptr;
 
 	UFUNCTION(BlueprintCallable, Category = "Player UI")
-	void SetupUIElements(UTextBlock* InteractText, UTextBlock* TutText);
+	void SetupUIElements(UTextBlock* InteractText, UTextBlock* TutText, UImage* BGImage);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player UI")
 	float fTutorialTimer = 5.0f;
