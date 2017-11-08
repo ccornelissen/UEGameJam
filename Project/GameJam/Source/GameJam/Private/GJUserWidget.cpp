@@ -2,6 +2,7 @@
 
 #include "GJUserWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 
 void UGJUserWidget::NativeConstruct()
 {
@@ -18,23 +19,27 @@ void UGJUserWidget::SetInteractionText(FText TextToSet)
 
 void UGJUserWidget::SetTutorialText(FText TextToSet, float fTimer)
 {
-	if (TutorialText)
+	if (TutorialText && TutTextBG)
 	{
 		TutorialText->SetText(TextToSet);
 
 		TutorialText->SetVisibility(ESlateVisibility::Visible);
 
+		TutTextBG->SetVisibility(ESlateVisibility::Visible);
+
 		GetWorld()->GetTimerManager().SetTimer(TutHandle, this, &UGJUserWidget::ClearTutorialText, fTimer, false);
 	}
 }
 
-void UGJUserWidget::SetupUIElements(UTextBlock* InteractText, UTextBlock* TutText)
+void UGJUserWidget::SetupUIElements(UTextBlock* InteractText, UTextBlock* TutText, UImage* BGImage)
 {
-	if (InteractText && TutText)
+	if (InteractText && TutText && BGImage)
 	{
 		InteractionText = InteractText;
 
 		TutorialText = TutText;
+
+		TutTextBG = BGImage;
 	}
 }
 
@@ -45,6 +50,8 @@ void UGJUserWidget::ClearTutorialText()
 		TutorialText->SetText(ZeroText);
 
 		TutorialText->SetVisibility(ESlateVisibility::Hidden);
+
+		TutTextBG->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
