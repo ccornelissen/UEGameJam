@@ -17,6 +17,8 @@
 #include "GJAimActor.h"
 #include "GJEnemy.h"
 #include "GJUserWidget.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 // Sets default values//
 AGJPlayer::AGJPlayer()
@@ -43,6 +45,9 @@ AGJPlayer::AGJPlayer()
 	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PlayerSprite"));
 	PaperFlipbook->SetupAttachment(RootComponent);
 	PaperFlipbook->bAbsoluteRotation = true;
+
+	MyAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	MyAudioComp->SetupAttachment(RootComponent);
 }
 
 void AGJPlayer::SetTutorial(FText InText, float fTimer)
@@ -203,6 +208,13 @@ void AGJPlayer::OrderBud()
 				GetWorld()->GetTimerManager().SetTimer(AnimHandle, this, &AGJPlayer::ResetAnim, fAnimTimer);
 				
 			}
+
+			if (MyAudioComp && OrderSound)
+			{
+				MyAudioComp->SetSound(OrderSound);
+
+				MyAudioComp->Play();
+			}
 		}
 	}
 }
@@ -234,6 +246,13 @@ void AGJPlayer::RecallBuds()
 			PaperFlipbook->SetFlipbook(PointAnim);
 
 			GetWorld()->GetTimerManager().SetTimer(AnimHandle, this, &AGJPlayer::ResetAnim, fAnimTimer);
+		}
+
+		if (MyAudioComp && RecallSound)
+		{
+			MyAudioComp->SetSound(RecallSound);
+
+			MyAudioComp->Play();
 		}
 
 	}
@@ -302,8 +321,6 @@ void AGJPlayer::Kick()
 {
 	if (bCanKick)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Can Kick"));
-
 		bCanKick = false;
 
 		bKicking = true;
@@ -371,30 +388,46 @@ void AGJPlayer::MoveRight(float Value)
 
 void AGJPlayer::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	AGJLightBud* LightBud = Cast<AGJLightBud>(OtherActor);
-
-	if (LightBud)
+	if (OtherActor)
 	{
-		if (LightBud->GetCurrentState() == ELightBudState::LB_Dormant)
+		AGJLightBud* LightBud = Cast<AGJLightBud>(OtherActor);
+
+		if (LightBud)
 		{
-			LightBud->Player = this;
+			if (LightBud->GetCurrentState() == ELightBudState::LB_Dormant)
+			{
+				LightBud->Player = this;
 
-			LightBuds.Add(LightBud);
+				LightBuds.Add(LightBud);
 
-			LightBud->MyNumber = LightBuds.Num() - 1;
+				LightBud->MyNumber = LightBuds.Num() - 1;
 
-			LightBud->SetCurrentState(ELightBudState::LB_Following);
+				LightBud->SetCurrentState(ELightBudState::LB_Following);
 
-			SetBudFollow(*LightBud);
+				SetBudFollow(*LightBud);
+
+				if (MyAudioComp && DiscoverSound)
+				{
+					MyAudioComp->SetSound(DiscoverSound);
+
+					MyAudioComp->Play();
+				}
+			}
 		}
-	}
 
-	AGJEnemy* Enemy = Cast<AGJEnemy>(OtherActor);
+		AGJEnemy* Enemy = Cast<AGJEnemy>(OtherActor);
 
-	if (Enemy && bKicking)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Kicking"));
+		if (Enemy && bKicking)
+		{
 
-		Enemy->Stun(fKickDistance);
+			Enemy->Stun(fKickDistance);
+
+			if (MyAudioComp && KickSound)
+			{
+				MyAudioComp->SetSound(KickSound);
+
+				MyAudioComp->Play();
+			}
+		}
 	}
 }
