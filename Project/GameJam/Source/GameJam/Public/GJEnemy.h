@@ -22,6 +22,9 @@ class AGJLightBud;
 class UPaperFlipbookComponent;
 class UPaperFlipbook;
 class ALight;
+class UAudioComponent;
+class USoundBase;
+
 
 UCLASS()
 class GAMEJAM_API AGJEnemy : public ACharacter
@@ -89,8 +92,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UPaperFlipbook* IdleAnim;
 
+	//Audio
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	UAudioComponent* MyAudioComp = nullptr;
 
-
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* BiteSound;
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* RetreatSound;
 
 public:	
 	// Called every frame

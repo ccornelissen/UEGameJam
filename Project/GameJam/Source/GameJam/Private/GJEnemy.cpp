@@ -9,6 +9,9 @@
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
 #include "Engine/Light.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
+
 
 // Sets default values
 AGJEnemy::AGJEnemy()
@@ -19,6 +22,10 @@ AGJEnemy::AGJEnemy()
 	PaperFlipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("BudSprite"));
 	PaperFlipbook->SetupAttachment(RootComponent);
 	PaperFlipbook->bAbsoluteRotation = true;
+
+	MyAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	MyAudioComp->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -62,6 +69,13 @@ void AGJEnemy::Retreat()
 	if (MyController && RetreatLocation)
 	{
 		MyController->SetRetreatPoint(RetreatLocation);
+	}
+
+	if (MyAudioComp && RetreatSound)
+	{
+		MyAudioComp->SetSound(RetreatSound);
+
+		MyAudioComp->Play();
 	}
 
 	CurrentState = EEnemyState::ES_Retreating;
@@ -114,6 +128,14 @@ void AGJEnemy::Attack()
 		MyController->ClearLightBud();
 
 		CurrentState = EEnemyState::ES_Dormant;
+
+		if (MyAudioComp && BiteSound)
+		{
+			MyAudioComp->SetSound(BiteSound);
+
+			MyAudioComp->Play();
+		}
+
 	}
 }
 
@@ -129,6 +151,14 @@ void AGJEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Oth
 		MyController->SetLightBud(LightBud);
 
 		CurrentState = EEnemyState::ES_Chasing;
+
+		if (MyAudioComp && BiteSound)
+		{
+			MyAudioComp->SetSound(BiteSound);
+
+			MyAudioComp->Play();
+		}
+
 	}
 }
 
@@ -172,11 +202,4 @@ void AGJEnemy::Tick(float DeltaTime)
 			}
 		}
 	}
-
-	if (CurrentState == EEnemyState::ES_Chasing)
-	{
-		RangeCheck();
-	}
-	
-
 }

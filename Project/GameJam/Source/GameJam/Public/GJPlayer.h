@@ -15,6 +15,9 @@ class AGJAimActor;
 class UBoxComponent;
 class UGJUserWidget;
 class AGJPlayerController;
+class UAudioComponent;
+class USoundBase;
+
 
 UCLASS()
 class GAMEJAM_API AGJPlayer : public ACharacter
@@ -41,6 +44,24 @@ protected:
 
 	AGJPlayerController* MyController = nullptr;
 
+	/////////Audio//////////
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	UAudioComponent* MyAudioComp = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* OrderSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* KickSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* RecallSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* DiscoverSound;
+
+
 	///////Light Bud Logic/////////////
 	TArray<AGJLightBud*> LightBuds;
 
@@ -58,6 +79,8 @@ protected:
 	void RearrangeBuds();
 
 	void SwitchBudForward();
+
+	void SwitchBudBack();
 
 	//////Aiming Logic///////
 	UPROPERTY(EditDefaultsOnly, Category = "Aiming")
