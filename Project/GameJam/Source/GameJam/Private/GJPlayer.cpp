@@ -304,7 +304,13 @@ void AGJPlayer::RearrangeBuds()
 
 void AGJPlayer::SwitchBudForward()
 {
-	if (LightBuds.Num() > 1)
+	if (LightBuds.Num() == 2)
+	{
+		LightBuds.Swap(1, 0);
+
+		RearrangeBuds();
+	}
+	else if (LightBuds.Num() > 1)
 	{
 		for (int32 i = 0; i < LightBuds.Num(); i++)
 		{
@@ -335,7 +341,13 @@ void AGJPlayer::SwitchBudForward()
 
 void AGJPlayer::SwitchBudBack()
 {
-	if (LightBuds.Num() > 1)
+	if (LightBuds.Num() == 2)
+	{
+		LightBuds.Swap(1, 0);
+
+		RearrangeBuds();
+	}
+	else if (LightBuds.Num() > 1)
 	{
 		for (int32 i = 0; i < LightBuds.Num(); i++)
 		{
