@@ -189,16 +189,7 @@ void AGJLightBud::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * 
 
 void AGJLightBud::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
-	//TO DO FIX THIS
-	if (OtherActor && CurrentState != ELightBudState::LB_Following)
-	{
-		APowerPad* HitPad = Cast<APowerPad>(OtherActor);
 
-		if (HitPad)
-		{
-			HitPad->TurnOff();
-		}
-	}
 }
 
 

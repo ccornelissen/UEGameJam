@@ -54,6 +54,11 @@ AGJPlayer::AGJPlayer()
 
 void AGJPlayer::SetTutorial(FText InText, float fTimer)
 {
+	if (!MyWidget && MyController)
+	{
+		MyWidget = &MyController->GetUserWidget();
+	}
+
 	if (MyWidget)
 	{
 		MyWidget->SetTutorialText(InText, fTimer);

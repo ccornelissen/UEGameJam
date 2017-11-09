@@ -18,6 +18,9 @@ class GAMEJAM_API AGJPlayerController : public APlayerController
 public:
 	UGJUserWidget& GetUserWidget();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UGJUserWidget* PlayerUI = nullptr;
+
 protected:
 
 	// Called when the game starts or when spawned//
@@ -25,8 +28,5 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UGJUserWidget> PlayerUIToCreate = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	UGJUserWidget* PlayerUI = nullptr;
 	
 };
