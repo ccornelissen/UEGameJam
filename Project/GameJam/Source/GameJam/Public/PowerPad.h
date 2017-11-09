@@ -15,6 +15,9 @@ enum class EPadState : uint8
 };
 
 class APowerPadManager;
+class UAudioComponent;
+class USoundBase;
+
 
 UCLASS()
 class GAMEJAM_API APowerPad : public AActor
@@ -52,5 +55,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	UMaterialInterface* OnMat = nullptr;
 	
-	
+	//Audio
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	UAudioComponent* MyAudioComp = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* SwitchSound;
 };

@@ -104,6 +104,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Audio")
 	USoundBase* RetreatSound;
 
+	//ParticleSystem
+	UPROPERTY(EditDefaultsOnly, Category = "Particles")
+	TSubclassOf<AActor> MyParticle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

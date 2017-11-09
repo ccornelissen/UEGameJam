@@ -139,6 +139,11 @@ void AGJEnemy::Attack()
 			GetWorld()->SpawnActor<ALight>(DeathLight, LightBud->GetActorLocation(), LightBud->GetActorRotation());
 		}
 
+		if (MyParticle)
+		{
+			GetWorld()->SpawnActor<AActor>(MyParticle, LightBud->GetActorLocation(), LightBud->GetActorRotation());
+		}
+
 		LightBud->ReturnToPlayer();
 		LightBud->ClearFollow();
 

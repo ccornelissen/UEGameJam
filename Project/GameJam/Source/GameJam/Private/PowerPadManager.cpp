@@ -5,6 +5,9 @@
 #include "Engine/Light.h"
 #include "Components/AudioComponent.h"
 #include "GJEnemy.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
+#include "MovieSceneSequencePlayer.h"
 
 
 // Sets default values
@@ -96,7 +99,15 @@ void APowerPadManager::ActionComplete()
 		}
 	}
 
+	if (bHasSequenceToPlay && SequenceToPlay)
+	{
+		ULevelSequencePlayer* CinePlayer = SequenceToPlay->SequencePlayer;
 
+		if (CinePlayer)
+		{
+			CinePlayer->Play();
+		}
+	}
 
 	MyAudioComp->Play();
 }
